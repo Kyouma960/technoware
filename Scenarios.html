@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Table Selection</title>
+  <style>
+ * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f9fafb;
+      margin: 0;
+      padding: 2rem;
+    }
+
+    .page-title {
+      text-align: center;
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: #2d3748;
+      margin-bottom: 2rem;
+    }
+
+    .layout {
+      display: flex;
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      flex: 1;
+    }
+
+    .card {
+      background: white;
+      padding: 2rem;
+      border-radius: 1.5rem;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+      transition: 0.2s ease;
+      cursor: pointer;
+      text-align: center;
+      font-size: 1.25rem;
+      min-height: 150px;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      background-color: #edf2f7;
+    }
+
+    .card.selected {
+      background-color: #38a169;
+      color: white;
+      transform: scale(1.05);
+    }
+
+    .card-number {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    .card-seats {
+      font-size: 1rem;
+      margin-top: 0.5rem;
+    }
+
+    .detail-panel {
+      flex: 1.2;
+      background: white;
+      padding: 2rem;
+      border-radius: 1.5rem;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+      min-height: 300px;
+    }
+
+    .detail-panel.hidden {
+      display: none;
+    }
+
+    .detail-title {
+      font-size: 1.75rem;
+      font-weight: bold;
+      margin-bottom: 1rem;
+      color: #2d3748;
+    }
+
+    .detail-content {
+      font-size: 1rem;
+      color: #4a5568;
+    }
+
+    .confirm-btn {
+      margin-top: 2rem;
+      padding: 0.75rem 1.5rem;
+      background-color: #3182ce;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    .confirm-btn:hover {
+      background-color: #2b6cb0;
+    }
+
+    @media (max-width: 900px) {
+      .layout {
+        flex-direction: column;
+      }
+
+      .card-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .card-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="page-title">Select Your Scenario</div>
+  <div class="layout">
+    <div class="card-grid" id="cardGrid"></div>
+
+    <div class="detail-panel hidden" id="detailPanel">
+      <div class="detail-title" id="detailTitle">Table #</div>
+      <div class="detail-content" id="detailContent"></div>
+      <button class="confirm-btn" onclick="confirmReservation()">Confirm</button>
+    </div>
+  </div>
+
+  <script>
+    let selectedTable = null;
+    const cardGrid = document.getElementById("cardGrid");
+    const detailPanel = document.getElementById("detailPanel");
+    const detailTitle = document.getElementById("detailTitle");
+    const detailContent = document.getElementById("detailContent");
+
+    fetch('http://localhost:5000/config.json')
+      .then(res => res.json())
+      .then(tables => {
+        tables.forEach(table => {
+          const card = document.createElement("div");
+          card.classList.add("card");
+          card.innerHTML = `
+            <div class="card-number">${table.name}</div>
+          `;
+          card.onclick = () => {
+            document.querySelectorAll(".card").forEach(el => el.classList.remove("selected"));
+            card.classList.add("selected");
+            selectedTable = table;
+            showDetails(table);
+          };
+          cardGrid.appendChild(card);
+        });
+      });
+
+    function showDetails(table) {
+      detailPanel.classList.remove("hidden");
+      detailTitle.textContent = table.name;
+      detailContent.innerHTML = `
+        <p><strong>Description:</strong> ${table.description}</p>
+        <p><strong>Values:</strong> ${table.values}</p>
+      `;
+    }
+
+function confirmReservation() {
+  if (!selectedTable) return;
+  fetch('http://localhost:5000/send', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(selectedTable)
+  })
+  .then(res => res.json())
+  .then(data => alert(data.message))
+  .catch(err => alert("Error sending: " + err.message));
+}
+
+  </script>
+</body>
+</html>

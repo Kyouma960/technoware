@@ -1,0 +1,60 @@
+[
+  {
+    "id": 1,
+    "name": "Low Intensity",
+    "description": "Best for Highly Lit Environments.",
+    "light_raw": "80",
+    "light_avg": "95",
+    "light_last": "92"
+  },
+  {
+    "id": 2,
+    "name": "Medium Intensity",
+    "description": "Best for Moderately Lit Environments.",
+    "light_raw": "432",
+    "light_avg": "450",
+    "light_last": "520"
+  },
+  {
+    "id": 3,
+    "name": "High Intensity",
+    "description": "Best for pitch-black Environments.",
+    "light_raw": "972",
+    "light_avg": "959",
+    "light_last": "926"
+  },
+  {
+    "id": 4,
+    "name": "Voltage Overload",
+    "description": "In case of a voltage emergency.",
+    "volt":"15000"
+  },
+  {
+    "id": 5,
+    "name": "Vandalism",
+    "description": "If someone tries to mess with the unit.",
+    "volt":"73"
+  },
+  {
+    "id": 6,
+    "name": "Tunnel",
+    "description": "While passing under the tunnel.",
+    "light_raw": "1000",
+    "light_avg": "1000",
+    "light_last": "1000"
+  },
+  {
+    "id": 7,
+    "name": "Daylight",
+    "description": "High Light Environment.",
+    "light_raw": "0",
+    "light_avg": "0",
+    "light_last": "0"
+  },
+  {
+    "id": 8,
+    "name": "Temperature Overload",
+    "description": "In case the temperature is too high.",
+    "volt": "120"
+  }
+]
