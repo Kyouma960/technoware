@@ -38,3 +38,9 @@ In this hackathon, we try to achieve the fundamental goal which is to make UI, s
 - **Database:** JSON
 - **Other Tools:** GitHub, LazyVim / Visual Studio Code
 
+---
+
+## 🔗 Links
+
+- 📁 [GitHub](https://github.com/Kyouma960/technoware)  
+- 📝 [Full Documentatiom](https://docs.google.com/document/d/1xz3czOfSjxJ6Z0f4v56a9lgsNY3C8d9nuHtBwNd9EXs/edit?usp=sharing)  
