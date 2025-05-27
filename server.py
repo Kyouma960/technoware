@@ -15,7 +15,7 @@ def reserve_table():
     print("Received:", data)
     with open('data/main.json', 'w') as f:
         json.dump(data, f, indent=2)
-    return jsonify({'message': f"Table {data['id']} received!"})
+    return jsonify({'message': f"received!"})
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -125,6 +125,41 @@
         grid-template-columns: 1fr;
       }
     }
+
+.slider-section {
+  max-width: 800px;
+  margin: 3rem auto 0 auto;
+  background: white;
+  padding: 2rem;
+  border-radius: 1.5rem;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+.slider-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  color: #2d3748;
+}
+
+.slider-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.slider-row label {
+  min-width: 150px;
+  font-weight: bold;
+  color: #4a5568;
+}
+
+.slider-row input[type="range"] {
+  flex: 1;
+}
+
   </style>
 </head>
 <body>
@@ -140,6 +175,29 @@
     </div>
   </div>
 
+
+
+<div class="slider-section">
+  <h2 class="slider-title">Adjust Sensor Values</h2>
+
+  <div class="slider-row">
+    <label for="lightSlider">Light Value:</label>
+    <input type="range" id="lightSlider" min="0" max="1000" />
+    <span id="lightValue">0</span>
+  </div>
+
+  <div class="slider-row">
+    <label for="tempSlider">Temperature (°C):</label>
+    <input type="range" id="tempSlider" min="-10" max="200" />
+    <span id="tempValue">0</span>
+  </div>
+
+  <div class="slider-row">
+    <label for="voltSlider">Voltage (V):</label>
+    <input type="range" id="voltSlider" min="0" max="200" step="1" />
+    <span id="voltValue">0</span>
+  </div>
+</div>
   <script>
     let selectedTable = null;
     const cardGrid = document.getElementById("cardGrid");
@@ -171,22 +229,84 @@
       detailTitle.textContent = table.name;
       detailContent.innerHTML = `
         <p><strong>Description:</strong> ${table.description}</p>
-        <p><strong>Values:</strong> ${table.values}</p>
+        <p><strong>Values:</strong> ${JSON.stringify(table.values)}</p>
       `;
     }
 
+
 function confirmReservation() {
   if (!selectedTable) return;
+
+  // Update the values object with current slider values, but keep any other properties intact
+  selectedTable.values = {
+    ...selectedTable.values,
+    light_avg: Number(lightSlider.value),
+    temp: Number(tempSlider.value),
+    volt: Number(voltSlider.value),
+  };
+
   fetch('http://localhost:5000/send', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(selectedTable)
+    body: JSON.stringify(selectedTable.values)
   })
   .then(res => res.json())
-  .then(data => alert(data.message))
   .catch(err => alert("Error sending: " + err.message));
 }
+const lightSlider = document.getElementById("lightSlider");
+const tempSlider = document.getElementById("tempSlider");
+const voltSlider = document.getElementById("voltSlider");
 
+const lightValueDisplay = document.getElementById("lightValue");
+const tempValueDisplay = document.getElementById("tempValue");
+const voltValueDisplay = document.getElementById("voltValue");
+
+
+function updateSliders(table) {
+  const values = table.values || {};
+
+  const light = Number(values.light_avg) || 0;
+  const temp = Number(values.temp) || 0;
+  const volt = Number(values.volt) || 0;
+
+  lightSlider.value = light;
+  tempSlider.value = temp;
+  voltSlider.value = volt;
+
+  lightValueDisplay.textContent = light;
+  tempValueDisplay.textContent = temp;
+  voltValueDisplay.textContent = volt;
+
+  // Store them in the selectedTable for sending
+  selectedTable.values.light_avg = light;
+  selectedTable.values.temp = temp;
+  selectedTable.values.volt = volt;
+}
+
+function showDetails(table) {
+  detailPanel.classList.remove("hidden");
+  detailTitle.textContent = table.name;
+  detailContent.innerHTML = `
+    <p><strong>Description:</strong> ${table.description}</p>
+    <p><strong>Values:</strong> ${JSON.stringify(table.values)}</p>
+  `;
+  updateSliders(table);
+}
+
+lightSlider.addEventListener("input", () => {
+  lightValueDisplay.textContent = lightSlider.value;
+  if (selectedTable) selectedTable.values.light_avg = Number(lightSlider.value);
+});
+
+tempSlider.addEventListener("input", () => {
+  tempValueDisplay.textContent = tempSlider.value;
+  if (selectedTable) selectedTable.values.temp = Number(tempSlider.value);
+});
+
+voltSlider.addEventListener("input", () => {
+  voltValueDisplay.textContent = voltSlider.value;
+  if (selectedTable) selectedTable.values.volt = Number(voltSlider.value);
+});
   </script>
 </body>
 </html>
