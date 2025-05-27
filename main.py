@@ -3,7 +3,7 @@ from tw_mssp import MASTER_BIT
 import json
 
 mssp = Mssp("COM1", 9600, 5, True)
-
+mssp = Mssp("COM3", 9600, 5, True)
 def read_main():
     try:
         with open('data/main.json', 'r') as f:

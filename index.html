@@ -237,7 +237,6 @@
 function confirmReservation() {
   if (!selectedTable) return;
 
-  // Update the values object with current slider values, but keep any other properties intact
   selectedTable.values = {
     ...selectedTable.values,
     light_avg: Number(lightSlider.value),
@@ -277,7 +276,6 @@ function updateSliders(table) {
   tempValueDisplay.textContent = temp;
   voltValueDisplay.textContent = volt;
 
-  // Store them in the selectedTable for sending
   selectedTable.values.light_avg = light;
   selectedTable.values.temp = temp;
   selectedTable.values.volt = volt;
